@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Client - SemAnalyzerAgentic{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1>Edit Client</h1>
+        <p class="text-muted">Update client information</p>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{{ url_for('web.client_detail', client_id=client.id) }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Client Details
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Client Information</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('web.edit_client', client_id=client.id) }}">
+            <div class="mb-3">
+                <label for="name" class="form-label">Client Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ client.name }}" required>
+                <div class="form-text">Company or organization name</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="website" class="form-label">Website</label>
+                <input type="text" class="form-control" id="website" name="website" 
+                       value="{{ client.website }}" placeholder="example.com" required>
+                <div class="form-text">Domain name without http:// or https://</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="email" class="form-label">Contact Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ client.email }}" required>
+                <div class="form-text">Primary contact email for reports and notifications</div>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="active" name="active" {% if client.active %}checked{% endif %}>
+                <label class="form-check-label" for="active">
+                    Active client
+                </label>
+                <div class="form-text">Inactive clients will not receive automated analysis</div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Update Client</button>
+            <a href="{{ url_for('web.client_detail', client_id=client.id) }}" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

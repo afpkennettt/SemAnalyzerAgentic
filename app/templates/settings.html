@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings - SemAnalyzerAgentic{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>Settings</h1>
+        <p class="text-muted">Configure your application settings</p>
+    </div>
+</div>
+
+<!-- API Configuration -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">API Configuration</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('web.settings') }}">
+            <div class="mb-3">
+                <label for="semrush_api_key" class="form-label">SEMrush API Key</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="semrush_api_key" name="semrush_api_key" 
+                        value="{{ 'CONFIGURED' if config.SEMRUSH_API_KEY else '' }}" 
+                        placeholder="Enter your SEMrush API key">
+                    <button class="btn btn-outline-secondary" type="button" id="toggleSemrushKey">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="form-text text-muted">Required for SEO analysis using SEMrush</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="openai_api_key" class="form-label">OpenAI API Key</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="openai_api_key" name="openai_api_key" 
+                        value="{{ 'CONFIGURED' if config.OPENAI_API_KEY else '' }}" 
+                        placeholder="Enter your OpenAI API key">
+                    <button class="btn btn-outline-secondary" type="button" id="toggleOpenAIKey">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="form-text text-muted">Required for AI analysis and recommendations</div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <h5 class="mb-3">Email Notifications</h5>
+            
+            <div class="mb-3">
+                <label for="mail_server" class="form-label">SMTP Server</label>
+                <input type="text" class="form-control" id="mail_server" name="mail_server" 
+                    value="{{ config.MAIL_SERVER }}" placeholder="e.g., smtp.gmail.com">
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="mail_port" class="form-label">SMTP Port</label>
+                        <input type="number" class="form-control" id="mail_port" name="mail_port" 
+                            value="{{ config.MAIL_PORT }}" placeholder="e.g., 587">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="mail_use_tls" class="form-label">Use TLS</label>
+                        <select class="form-select" id="mail_use_tls" name="mail_use_tls">
+                            <option value="True" {% if config.MAIL_USE_TLS %}selected{% endif %}>Yes</option>
+                            <option value="False" {% if not config.MAIL_USE_TLS %}selected{% endif %}>No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="mail_username" class="form-label">Email Username</label>
+                <input type="text" class="form-control" id="mail_username" name="mail_username" 
+                    value="{{ config.MAIL_USERNAME or '' }}" placeholder="Your email address">
+            </div>
+            
+            <div class="mb-3">
+                <label for="mail_password" class="form-label">Email Password</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="mail_password" name="mail_password" 
+                        value="{{ 'CONFIGURED' if config.MAIL_PASSWORD else '' }}" 
+                        placeholder="Your email password or app password">
+                    <button class="btn btn-outline-secondary" type="button" id="toggleMailPassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="mail_default_sender" class="form-label">Default Sender</label>
+                <input type="email" class="form-control" id="mail_default_sender" name="mail_default_sender" 
+                    value="{{ config.MAIL_DEFAULT_SENDER or '' }}" placeholder="noreply@example.com">
+            </div>
+            
+            <hr class="my-4">
+            
+            <h5 class="mb-3">Analysis Settings</h5>
+            
+            <div class="mb-3">
+                <label for="analysis_frequency" class="form-label">Analysis Frequency</label>
+                <select class="form-select" id="analysis_frequency" name="analysis_frequency">
+                    <option value="daily" {% if config.ANALYSIS_FREQUENCY == 'daily' %}selected{% endif %}>Daily</option>
+                    <option value="weekly" {% if config.ANALYSIS_FREQUENCY == 'weekly' %}selected{% endif %}>Weekly</option>
+                    <option value="monthly" {% if config.ANALYSIS_FREQUENCY == 'monthly' %}selected{% endif %}>Monthly</option>
+                </select>
+                <div class="form-text text-muted">How often to automatically analyze client websites</div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Toggle password visibility
+    document.getElementById('toggleSemrushKey').addEventListener('click', function() {
+        const input = document.getElementById('semrush_api_key');
+        if (input.type === 'password') {
+            input.type = 'text';
+            this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        } else {
+            input.type = 'password';
+            this.innerHTML = '<i class="fas fa-eye"></i>';
+        }
+    });
+    
+    document.getElementById('toggleOpenAIKey').addEventListener('click', function() {
+        const input = document.getElementById('openai_api_key');
+        if (input.type === 'password') {
+            input.type = 'text';
+            this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        } else {
+            input.type = 'password';
+            this.innerHTML = '<i class="fas fa-eye"></i>';
+        }
+    });
+    
+    document.getElementById('toggleMailPassword').addEventListener('click', function() {
+        const input = document.getElementById('mail_password');
+        if (input.type === 'password') {
+            input.type = 'text';
+            this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        } else {
+            input.type = 'password';
+            this.innerHTML = '<i class="fas fa-eye"></i>';
+        }
+    });
+</script>
+{% endblock %}
